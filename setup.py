@@ -14,14 +14,14 @@
 # limitations under the License.
 #
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, find_namespace_packages
 
 url = "https://github.com/informatics-isi-edu/atlas-d2k-py"
 author = 'USC Information Sciences Institute, Informatics Systems Research Division'
 author_email = 'isrd-support@isi.edu'
 
 setup(
-    name='atlas_d2k',
+    name='atlas_d2k_core',
     description='ATLAS-D2K python module',
     version='0.1',
     url=url,
@@ -29,13 +29,14 @@ setup(
     author_email=author_email,
     maintainer=author,
     maintainer_email=author_email,
-#    packages=find_packages(exclude=["tests", "tmp"]),
+#    packages=find_namespace_packages(include=["atlas_d2k", "atlas_d2k.*"]),
     packages=[
         'atlas_d2k',
         'atlas_d2k.pipelines',
         'atlas_d2k.pipelines.scRNASeq',
         'atlas_d2k.utils'
     ],
+    python_requires='>=3.8, <4',
 #    entry_points={
 #        'console_scripts': [
 #            'smite-imaging-server = smite.pipelines.image_processing.server:main',
@@ -54,12 +55,14 @@ setup(
     ],
     license='Apache 2.0',
     classifiers=[
+        'Intended Audience :: Science/Research',        
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',        
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12'
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ]
