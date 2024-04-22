@@ -21,7 +21,7 @@ author = 'USC Information Sciences Institute, Informatics Systems Research Divis
 author_email = 'isrd-support@isi.edu'
 
 setup(
-    name='atlas_d2k_core',
+    name='atlas_d2k_base',
     description='ATLAS-D2K python module',
     version='0.1',
     url=url,
@@ -45,13 +45,7 @@ setup(
 #    },
     # move all image processing to requires if downloading lots of dependencies is a concern. 
     install_requires=[
-        'lxml',
         'deriva',
-        'imagetools',        
-        'tifffile',
-        'zarr',
-        'imagecodecs',
-        'scikit-image',
     ],
     license='Apache 2.0',
     classifiers=[
