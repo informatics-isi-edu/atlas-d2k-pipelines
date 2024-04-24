@@ -34,7 +34,8 @@ setup(
         'atlas_d2k',
         'atlas_d2k.pipelines',
         'atlas_d2k.pipelines.scRNASeq',
-        'atlas_d2k.utils'
+        'atlas_d2k.utils',
+        'atlas_d2k.utils.doi',        
     ],
     python_requires='>=3.8, <4',
 #    entry_points={
