@@ -48,20 +48,31 @@ def create_table_if_not_exist(model, schema_name, tdoc):
 
 # ----------------------------------------------------------------
 def drop_table_if_exist(model, schema_name, table_name):
-    if not schema_name in model.schemas:
-        print("ERROR: drop table: schema %s doesn't exist" % (schema_name))
-        return()
+    if schema_name not in model.schemas.keys():
+        raise TypeError("ERROR: drop table: schema %s doesn't exist" % (schema_name))
+
     schema = model.schemas[schema_name]
-    if table_name in schema.tables:
+    if table_name in schema.tables.keys():
         model.schemas[schema_name].tables[table_name].drop()
         print('Drop table %s:%s' % (schema_name, table_name))
     else:
         print("ERROR: drop table: table %s:%s doesn't exist" % (schema_name, table_name))
 
+# ----------------------------------------------------------------
+# Check that schema and table exist.. 
+def drop_column_if_exist(model, schema_name, table_name, column_name):
+    if schema_name not in model.schemas.keys() or table_name not in model.schemas[schema_name].tables.keys():
+        raise TypeError("ERROR: either schema %s or table %s doesn't exist" % (schema_name, table_name))
+    
+    table = model.schemas[schema_name].tables[table_name]
+    if column_name in table.columns.elements:
+        table.columns[column_name].drop()
+        print('Drop column %s:%s:%s' % (schema_name, table_name, column_name))
+    else:
+        print("ERROR: drop column: column %s:%s:%s doesn't exist" % (schema_name, table_name, column_name))
         
 # -------------------------------------------------------
 def create_column_defs(cname_list):
-
     column_defs = []
     # add the rest of columns as text columns
     for cname in cname_list:
