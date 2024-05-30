@@ -16,7 +16,10 @@ DCCTX = {
     "comment" : "config/comment",
     "pipeline" : "pipeline",
     "pipeline/image" : "pipeline/image",
-    "pipeline/noid" : "pipeline/noid",        
+    "pipeline/seq/scrna" : "pipeline/seq/scrna",
+    "pipeline/seq/mrna" : "pipeline/seq/mrna",
+    "pipeline/seq/st" : "pipeline/seq/st",    # spatial transcriptomics
+    "pipeline/noid" : "pipeline/noid",        # obsolete
     "cli": "cli",
     "cli/read" : "cli/read",
     "cli/test": "cli/test",            # read-write    

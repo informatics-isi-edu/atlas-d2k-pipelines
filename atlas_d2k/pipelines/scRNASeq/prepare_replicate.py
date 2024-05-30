@@ -71,7 +71,7 @@ def main(server_name, catalog_id, credentials, args):
     server = DerivaServer('https', server_name, credentials)
     catalog = server.connect_ermrest(catalog_id)
     store = HatracStore("https", server_name, credentials)
-    catalog.dcctx['cid'] = DCCTX["annotation"]
+    catalog.dcctx['cid'] = DCCTX["pipeline/seq/scrna"]
     model = catalog.getCatalogModel()
 
     if args.replicate:
