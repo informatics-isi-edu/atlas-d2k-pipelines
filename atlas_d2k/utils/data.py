@@ -44,7 +44,7 @@ def approx_json_bytecnt(data):
         raise TypeError('cannot estimate size of unexpected data %r' % data)
 # ---------------------------------------------------------------
 
-def insert_if_not_exist(catalog, schema_name, table_name, payload, defaults='', batch_size=10000):
+def insert_if_not_exist(catalog, schema_name, table_name, payload, defaults=None, batch_size=10000):
     if not payload:
         return []
 
@@ -138,16 +138,19 @@ def update_data_if_change(catalog, schema_name, table_name, keys, defaults='', c
 # ---------------------------------------------------------------
 # TODO: make sure to return the right arrays!
 # constraints is used to check the existing entries in the Ermrest
-def insert_if_exist_update(catalog, schema_name, table_name, keys, defaults='', payload=[], constraints=None, update_columns=None, batch_size=10000, limit=50000, bypass_insert=False):
+def insert_if_exist_update(catalog, schema_name, table_name, keys, defaults=None, payload=[], constraints=None, update_columns=None, batch_size=10000, limit=50000, bypass_insert=False):
     print("------ insert_if_not_exist ---------")
+    #print(json.dumps(payload, indent=4))
+    
     if not keys or not payload:
         print("Payload is empty")
         return None
     print("insert_if_exist_update: sname: %s, table: %s, keys: %s, defaults: %s, constraints: %s" % (schema_name, table_name, keys, defaults, constraints))
     inserted = []    
     # == try to insert first
-    if bypass_insert or payload[0]["RID"]:
-        print("  - BYPASS INSERT: bypass_insert (%s) is True or RID exist in payload" % (bypass_insert))
+    #   - excluding checking for "RID" in payload[0].keys()?
+    if bypass_insert or "RID" in payload[0].keys():    
+        print("  - BYPASS INSERT: bypass_insert (%s) is True or RID exist in payload: payload[0]=%s" % (bypass_insert, payload[0]))
     else:
         inserted = insert_if_not_exist(catalog, schema_name, table_name, payload, defaults, batch_size)
         print("  - INSERTED: %d rows inserted" % (len(inserted)))
@@ -175,13 +178,13 @@ def insert_if_exist_update(catalog, schema_name, table_name, keys, defaults='', 
     # -- if constraints is not provided, create constraints based on rows to be updated
     if not constraints:
         if len(keys) == 1:
-            constraints = "%s=ANY(%s)" % (keys[0], ",".join(keys2update.keys()))
+            constraints = "%s=ANY(%s)" % (urlquote(keys[0]), ",".join([urlquote(row[keys[0]]) for row in keys2update.values()]))
         else:
             disjunctions = []
             for (index, row) in keys2update.items():
                 conjunctions = []
                 for key in keys:
-                    conjunctions.append("%s=%s" % (key, row[key]))
+                    conjunctions.append("%s=%s" % (urlquote(key), urlquote(row[key])))
                 disjunctions.append("&".join(conjunctions))
             constraints = ";".join(disjunctions)
     print("  - getting existing rows with constraints = %s" % (constraints))
@@ -244,7 +247,7 @@ def get_entities(catalog, schema_name, table_name, constraints=None, keys=["RID"
         if sort: url = "%s@sort(%s)" % (url, ",".join( [ urlquote(v) for v in sort ] ))
         if after: url = "%s@after(%s)" % (url, ",".join( [ urlquote(v) for v in after ]))
         url = "%s?limit=%d" % (url, page_size)
-        #print("get_entities: url = %s" % (url))
+        print("get_entities: url = %s" % (url))
         rows = catalog.get(url).json()
         payload.extend(rows)
         n = len(rows)

@@ -28,6 +28,10 @@ per_tag_annotation_tags = [
     tag["citation"],     
 ]
 
+TEXT_ARRAY_COLUMNS = [],
+MARKDOWN_COLUMNS = ["Notes"]
+INT4_COLUMNS = []
+
 # -- =================================================================================
 # -- model changes utilities
 # -- 
@@ -349,7 +353,9 @@ def get_schemas(model, schema_pattern=None, schema_names=[]):
         schemas.add(model.schemas[sname])
     return schemas
 
-# ----------------------------    
+# ----------------------------
+# error if schema doesn't exist.
+# ignore tables that do not exist. 
 def get_tables(model, schema_pattern=None, schema_names=[], table_pattern=None, table_names=[], exclude_schemas=[]):
     tables = set()
     sname_list = schema_names
@@ -368,7 +374,8 @@ def get_tables(model, schema_pattern=None, schema_names=[], table_pattern=None, 
                 else:
                     # print("tname: %s.%s does not exist" % (sname, tname))
                     pass
-    
+
+    # assume schema exists
     for sname in sname_list:
         schema = model.schemas[sname]
         for tname, table in schema.tables.items():
