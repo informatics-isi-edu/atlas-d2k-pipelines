@@ -11,6 +11,7 @@ In this document, we will go through some examples of accessing ERMrest. For mor
 
 ## HRA 3D Coordinate and Specimen
 
+
 The Specimen records are stored under `Gene_Expression:Specimen` table. The following is a simple
 `entity` request to fetch the first 25 rows:
 
@@ -44,9 +45,9 @@ is a simple example of doing this with JavaScript:
 /**
  * a simple GET request to demonstrate how you can use pagination to grab all the data in muliple requests.
  *
- * Assume we have n rows, and due to performance concerns, we want to to limit the request to only pageLimit rows.
+ * Assume we have n rows, and due to performance concerns, we want to limit the request to only pageLimit rows.
  * This function will first ask for pageLimit+1 results. If we get less than the requested number of rows, we're done.
- * But if we actually get pageLimit+1 records, there might actually be more. So we're going to ask for the next page of results.
+ * But if we recieve pageLimit+1 records, there might be more. So we're going to ask for the next page of results.
  *
  * Notes:
  * - In ermrest the sort and page criteria must be referring to the same columns. In this simple example
@@ -86,7 +87,7 @@ const fetchAllRows = async (url, pageLimit, afterRIDValue) => {
       const lastRowRID = responseRows[responseRows.length - 1].RID;
 
       // go for the next page
-      const nextRows = await fetchPageByPage(url, pageLimit, lastRowRID);
+      const nextRows = await fetchAllRows(url, pageLimit, lastRowRID);
       // append the current page of results with the other ones.
       return responseRows.concat(nextRows);
     } else {
@@ -119,7 +120,10 @@ getSpecimen();
 ```
 
 
+
+
 The HRA 3D Coordinate data is stored under `Gene_Expression:HRA_3D_Coordinate` table. The following is an example of fetching the data (using the same `fetchAllRows` as above):
+
 
 ```ts
 const getCoordinates = async () => {
