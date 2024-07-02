@@ -4,10 +4,11 @@ import sys
 import json
 from deriva.core import ErmrestCatalog, AttrDict, get_credential, DEFAULT_CREDENTIAL_FILE, tag, urlquote, DerivaServer, get_credential, BaseCLI
 from deriva.core.ermrest_model import builtin_types, Schema, Table, Column, Key, ForeignKey
-from deriva.core import urlquote, urlunquote
+from deriva.core import urlquote, urlunquote, DEFAULT_SESSION_CONFIG
+
 import argparse
 
-# define ddctx cid string
+# -- define ddctx cid string
 # 
 DCCTX = {
     "model": "model/change",
@@ -26,11 +27,26 @@ DCCTX = {
     "cli/ingest": "cli/ingest",        # read-write
 }
 
+# -- annotation tag to name
 tag2name = {}
 for key, value in tag.items():
     tag2name[value] = key
 tag2name['tag:isrd.isi.edu,2016:ignore'] = "ignore"
 
+# -- customize deriva retry methods
+session_config_write_retry = DEFAULT_SESSION_CONFIG.copy()
+session_config_write_retry.update({
+    # our PUT/POST to ermrest is idempotent
+    "allow_retry_on_all_methods": True,
+    # do more retries before aborting
+    "retry_read": 8,
+    "retry_connect": 5,
+    # increase delay factor * 2**(n-1) for Nth retry
+    "retry_backoff_factor": 5,
+})
+# need to be passed to the DerivaServer constructure e.g. server = DerivaServer("https", server_name, credentials, session_config=session_config_write_retry)
+
+# ======================================================================
 
 class Config():
     host = None
