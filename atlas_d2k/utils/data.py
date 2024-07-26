@@ -73,7 +73,7 @@ def insert_if_not_exist(catalog, schema_name, table_name, payload, defaults=None
         )
         inserted.extend(resp.json())
         #print("inserting rows[%d:%d](%d bytes): %s:%s => \n%s " % (index, nrows, bytes, schema_name, table_name, json.dumps(resp.json(), indent=4, sort_keys=True)))        
-        print("  - inserting rows[%d:%d](%d bytes): %s:%s " % (index, index+nrows, bytes, schema_name, table_name))
+        #print("  - inserting rows[%d:%d](%d bytes): %s:%s " % (index, index+nrows, bytes, schema_name, table_name))
         index = index + nrows
         nrows = batch_size
 

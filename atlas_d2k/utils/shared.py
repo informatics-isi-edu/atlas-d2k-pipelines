@@ -13,6 +13,7 @@ import argparse
 DCCTX = {
     "model": "model/change",
     "acl" : "config/acl",
+    "data": "data",
     "annotation" : "config/anno",
     "comment" : "config/comment",
     "pipeline" : "pipeline",
