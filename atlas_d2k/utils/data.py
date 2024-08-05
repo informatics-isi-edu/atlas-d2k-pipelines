@@ -149,7 +149,7 @@ def insert_if_exist_update(catalog, schema_name, table_name, keys, defaults=None
     inserted = []    
     # == try to insert first
     #   - excluding checking for "RID" in payload[0].keys()?
-    if bypass_insert or "RID" in payload[0].keys():    
+    if bypass_insert: # or "RID" in payload[0].keys():    
         print("  - BYPASS INSERT: bypass_insert (%s) is True or RID exist in payload: payload[0]=%s" % (bypass_insert, payload[0]))
     else:
         inserted = insert_if_not_exist(catalog, schema_name, table_name, payload, defaults, batch_size)
@@ -224,9 +224,9 @@ def insert_if_exist_update(catalog, schema_name, table_name, keys, defaults=None
 def delete_table_rows(catalog, schema_name, table_name, constraints=''):
 
     resp = catalog.delete(
-        "/entity/%s:%s%s" % (urlquote(schema_name), urlquote(table_name), constraints_str)
+        "/entity/%s:%s%s" % (urlquote(schema_name), urlquote(table_name), constraints)
     )
-    return(resp.json())
+    return(resp)
 
 # ---------------------------------------------------------------
 # example of descending order: "RID::desc::"

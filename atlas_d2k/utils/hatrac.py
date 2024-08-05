@@ -106,6 +106,8 @@ def hexstr2base64(hstr):
 # ----------------------------------------------------------
 
 # ===================================================================================
+# TODO: This is incomplete. DO NOT USE. Use store.put_loc for now.
+# e.g. hatrac_url = store.put_loc(upload_file_url, file_path, md5=md5_base64,content_disposition="filename*=UTF-8''%s" % (file_name), chunked=True, chunk_size=10*1024*1024, allow_versioning=False)
 
 def chunk_upload(store,
                 path,
@@ -115,10 +117,10 @@ def chunk_upload(store,
                 sha256=None,
                 content_type=None,
                 content_disposition=None,
-                chunked=False,
+                chunked=True,
                 chunk_size=DEFAULT_CHUNK_SIZE,
                 create_parents=True,
-                allow_versioning=True,
+                allow_versioning=False,
                 callback=None,
                 cancel_job_on_error=True):
     """
@@ -137,26 +139,23 @@ def chunk_upload(store,
         :param cancel_job_on_error:
         :return:
     """
-    store.check_path(path)
+
+    return store.put_loc(
+        path,
+        file_path,
+        headers=headers,
+        md5=md5,
+        sha256=sha256,
+        content_type=content_type,
+        content_disposition=content_disposition,
+        chunked=chunked,
+        chunk_size=chunk_size,
+        create_parents=create_parents,
+        allow_versioning=allow_versioning,
+        callback=callback,
+        cancel_job_on_error=cancel_job_on_error,
+    )
     
-    job_id = store.create_upload_job(path,
-                                     file_path,
-                                     md5,
-                                     sha256,
-                                     content_type=content_type,
-                                     content_disposition=content_disposition,
-                                     create_parents=create_parents,
-                                     chunk_size=chunk_size)
-    try:
-        store.put_obj_chunked(path,
-                              file_path,
-                              job_id,
-                              chunk_size=chunk_size,
-                              callback=callback,
-                              cancel_job_on_error=cancel_job_on_error)
-        return store.finalize_upload_job(path, job_id)
-    except (requests.Timeout, requests.ConnectionError, requests.exceptions.RetryError) as e:
-        raise HatracJobTimeout(e)
 
 # --------------------------------------------------------------------------------
 
